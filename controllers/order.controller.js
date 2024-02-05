@@ -14,5 +14,10 @@ export const createOrderController = async (req,res) => {
 
 export const getAllOrdersController = async (req,res) => {
     const orders = await orderModel.find().populate({path : "customer products.product", select : "-password -refreshtoken -createdAt -updatedAt -__v"}).select("-passsword")
-    res.status(200).send(orders)
+    res.status(200).json({"orders" : orders})
+}
+
+export const getOrderByUserId = async (req,res) => {
+    const orders = await orderModel.find({customer : req.user._id})
+    res.status(200).json({"orders" : orders})
 }
