@@ -88,6 +88,23 @@ export const loginController = async (req,res) => {
     }
 } 
 
+    export const refreshtoken = async (req,res) => {
+
+        const options = { httpOnly : true, secure : true }
+
+        res.clearCookie("accesstoken",options).clearCookie("refreshtoken",options)
+
+        const loggedInUser = await user.findById(req.user._id)
+
+        const refreshToken = loggedInUser.refreshtoken
+
+        const newrefreshToken = await loggedInUser.generateRefreshToken()
+
+        loggedInUser.refreshtoken = newrefreshToken
+        await loggedInUser.save({ validateBeforeSave: false })
+
+        res.status(200).cookie("accesstoken",refreshToken,options).cookie("refreshtoken",newrefreshToken,options).json({"newrefreshToken" : newrefreshToken,"accesstoken" : refreshToken})
+    }
 
 export const logoutController = async (req,res) => {
     await user.findByIdAndUpdate(req.user._id,{

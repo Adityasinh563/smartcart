@@ -38,7 +38,7 @@ userSchema.methods.generateAccessToken = function(){
     },
         process.env.ACCESS_SECRET_KEY,
     {
-        expiresIn : '50d'
+        expiresIn : '60s'
     }
     )
 }
@@ -52,7 +52,7 @@ userSchema.methods.generateRefreshToken = function(){
     },
         process.env.REFRESH_SECRET_KEY,
     {
-        expiresIn : '50d'
+        expiresIn : '60s'
     }
     )
 }
