@@ -25,5 +25,6 @@ export const verifyJwt = async (req,res,next) => {
     }
     catch(e){
         console.log(e)
+        res.status(401).json({error : "Session Timed Out"})
     }
 }

@@ -1,4 +1,5 @@
 import { user } from "../models/user.model.js";
+import bcrypt from 'bcrypt';
 import mongoose from "mongoose";
 
 
@@ -80,11 +81,11 @@ export const loginController = async (req,res) => {
             .status(200).json({user: foundUser,message : "Logged in successfully"})
         }
         else{
-            res.status(400).json({error : "Incorrect Password"})
+            res.status(400).json({message : "Incorrect Password"})
         }
     }
     else{
-        res.status(400).json({error : "user not found"})
+        res.status(400).json({message : "user not found"})
     }
 } 
 
@@ -120,5 +121,51 @@ export const logoutController = async (req,res) => {
     .clearCookie("accesstoken",options)
     .clearCookie("refreshtoken",options)
     .json({message : "Logged out successfully"})
+}
+
+export const getUsers = async (req,res) => {
+    const users = await user.find().select("-password -__v -refreshtoken")
+    
+    res.status(200).json(users)
+}
+
+export const getUserById = async (req,res) => {
+    const userId = req.user._id;
+
+    const userDetail = await user.findById(userId).select("-password -createdAt -updatedAt -__v -refreshtoken -isAdmin")
+
+    res.status(200).json(userDetail)
+}
+
+export const addressController = async (req,res) => {
+    const currentUser = req.user._id;
+
+    const address = req.body
+
+    const addaddress = await user.updateOne({
+        _id : currentUser 
+    },
+    {
+        $set : {
+            address : address
+        }
+    }) 
+    
+    res.status(200).json({"address" : addaddress})
+}
+
+export const editUserDetail = async (req,res) => {
+    const currentUser = req.user._id;
+
+    const body = req.body;
+
+    const updated = await user.findByIdAndUpdate(currentUser,{
+        $set : {
+            username : body.username,
+            address : body.address
+        }
+    },{new : true}).select("-refreshtoken -password -createdAt -updatedAt -__v -isAdmin")
+
+    res.status(200).json({updated})
 }
 

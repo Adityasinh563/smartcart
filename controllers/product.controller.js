@@ -38,3 +38,8 @@ export const getAllProduct = async (req,res) => {
     const products = await productModel.find()
     res.status(200).send(products)
 }
+
+export const getProductById = async (req,res) => {
+    const product = await productModel.findById(req.params.id)
+    res.status(200).send(product)
+}

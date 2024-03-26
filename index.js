@@ -6,6 +6,10 @@ import orderRouter from "./routes/order.route.js";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import adminRouter from  "./routes/admin.route.js";
+import cors from "cors";
+import cartRouter from "./routes/cart.route.js";
+import deliveryPartnerRouter from "./routes/deliverypartner.route.js";
 
 dotenv.config({
     path : '.env'
@@ -20,6 +24,7 @@ app.use(
 );
 app.use(express.static("public"))
 app.use(cookieParser())
+app.use(cors({origin : "http://localhost:4200",credentials : true}))
 
 mongoose.connect(process.env.MONGODB_URL).then(() => {
     console.log("DB connected successfully")
@@ -35,3 +40,6 @@ app.listen(process.env.PORT || 8000,() => {
 app.use('/api/users',userRouter)
 app.use('/api/products',productRouter)
 app.use('/api/orders',orderRouter)
+app.use('/api/admin',adminRouter)
+app.use('/api/cart',cartRouter)
+app.use('/api/deliverypartner',deliveryPartnerRouter)

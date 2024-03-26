@@ -1,6 +1,30 @@
-import { Schema,model } from "mongoose";
+import mongoose ,{ Schema,model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
+const addressSchema = new Schema({
+        street1 : {
+            type : String,
+        },
+        street2 : {
+            type : String,
+        },
+        street3 : {
+            type : String,
+        },
+        city : {
+            type : String,
+        },
+        state : {
+            type: String
+        },
+        zip : {
+            type : String
+        },
+        country : {
+            type : String
+        }
+})
 
 const userSchema = new Schema({
         username: {
@@ -13,6 +37,18 @@ const userSchema = new Schema({
         },
         refreshtoken: {
             type : String
+        },
+        address : {
+            type : addressSchema,
+            default : {}
+        },
+        isAdmin : {
+            type : Boolean,
+            default : false
+        },
+        isDeliveryPartner:{
+            type: Boolean,
+            default: false
         }
     },
     {
@@ -38,7 +74,7 @@ userSchema.methods.generateAccessToken = function(){
     },
         process.env.ACCESS_SECRET_KEY,
     {
-        expiresIn : '60s'
+        expiresIn : '1h'
     }
     )
 }
@@ -52,7 +88,7 @@ userSchema.methods.generateRefreshToken = function(){
     },
         process.env.REFRESH_SECRET_KEY,
     {
-        expiresIn : '60s'
+        expiresIn : '1h'
     }
     )
 }
